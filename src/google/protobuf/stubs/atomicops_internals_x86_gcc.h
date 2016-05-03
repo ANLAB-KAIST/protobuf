@@ -90,7 +90,11 @@ inline Atomic32 Barrier_AtomicIncrement(volatile Atomic32* ptr,
                        : : "memory");
   // temp now holds the old value of *ptr
   if (AtomicOps_Internalx86CPUFeatures.has_amd_lock_mb_bug) {
+    #ifdef __MIC__
+    _mm_mfence();
+    #else
     __asm__ __volatile__("lfence" : : : "memory");
+    #endif
   }
   return temp + increment;
 }
@@ -100,7 +104,11 @@ inline Atomic32 Acquire_CompareAndSwap(volatile Atomic32* ptr,
                                        Atomic32 new_value) {
   Atomic32 x = NoBarrier_CompareAndSwap(ptr, old_value, new_value);
   if (AtomicOps_Internalx86CPUFeatures.has_amd_lock_mb_bug) {
+    #ifdef __MIC__
+    _mm_mfence();
+    #else
     __asm__ __volatile__("lfence" : : : "memory");
+    #endif
   }
   return x;
 }
@@ -214,7 +222,11 @@ inline Atomic64 Barrier_AtomicIncrement(volatile Atomic64* ptr,
                        : : "memory");
   // temp now contains the previous value of *ptr
   if (AtomicOps_Internalx86CPUFeatures.has_amd_lock_mb_bug) {
+    #ifdef __MIC__
+    _mm_mfence();
+    #else
     __asm__ __volatile__("lfence" : : : "memory");
+    #endif
   }
   return temp + increment;
 }
@@ -271,7 +283,11 @@ inline Atomic64 Acquire_CompareAndSwap(volatile Atomic64* ptr,
                                        Atomic64 new_value) {
   Atomic64 x = NoBarrier_CompareAndSwap(ptr, old_value, new_value);
   if (AtomicOps_Internalx86CPUFeatures.has_amd_lock_mb_bug) {
+    #ifdef __MIC__
+    _mm_mfence();
+    #else
     __asm__ __volatile__("lfence" : : : "memory");
+    #endif
   }
   return x;
 }
