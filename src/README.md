@@ -169,6 +169,39 @@ autoconf documentation:
 
   Also, you will need to use GNU `make` (`gmake`) instead of AIX `make`.
 
+**Note for Intel Xeon Phi users**
+
+  First, you need to build in the host using normal options to get
+  a working protoc executable (e.g., `/usr/local/bin/protoc`).
+  Then cross-compile using the Intel compiler as follows:
+
+    ./configure \
+        --host=k1om-unknown-linux-gnu \
+        --build=x86_64-pc-linux-gnu \
+        --without-termcap \
+        --without-javac \
+        --without-ssl \
+        --enable-statc \
+        --enable-shared \
+        --prefix=/root \
+        --with-protoc=/usr/local/bin/protoc \
+        CC=icc \
+        CXX=icpc \
+        LD=icc \
+        CFLAGS=-mmic \
+        CXXFLAGS=-mmic \
+        LDFLAGS=-mmic
+    make
+
+  You should adjust protoc path and prefix according to your setup.
+
+  After then, `src/.libs` has the statically linkable .a libraries.
+  Now you can compile your MIC-native application using:
+
+    CFLAGS=-mmic -I<workingcopy>/src
+    LDFLAGS=<workingcopy>/src/.libs/libprotobuf.a
+
+
 C++ Installation - Windows
 --------------------------
 
